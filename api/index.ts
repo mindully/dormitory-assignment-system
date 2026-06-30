@@ -1,4 +1,4 @@
-import { createApp } from '../server';
+import { createApp } from './app';
 
 let app: any;
 
