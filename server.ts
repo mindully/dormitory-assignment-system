@@ -149,7 +149,7 @@ function parseExcelDate(val: any): string {
   return str;
 }
 
-async function startServer() {
+export async function createApp() {
   const app = express();
   const PORT = 3000;
 
@@ -610,7 +610,7 @@ async function startServer() {
   });
 
   // Integration with Vite dev server
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
@@ -624,9 +624,15 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
-  });
+  return app;
 }
 
-startServer();
+const isVercel = process.env.VERCEL === '1';
+if (!isVercel) {
+  createApp().then(app => {
+    const PORT = 3000;
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on http://0.0.0.0:${PORT}`);
+    });
+  });
+}
