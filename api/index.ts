@@ -261,21 +261,24 @@ function createApp() {
         }
       });
 
+      const failedReasonsMap = new Map<string, number>();
+      failedList.forEach(item => failedReasonsMap.set(item.reason, (failedReasonsMap.get(item.reason) || 0) + 1));
+      const failedReasons = Array.from(failedReasonsMap.entries()).map(([reason, count]) => ({
+        reason, count, percentage: failedList.length > 0 ? parseFloat(((count / failedList.length) * 100).toFixed(1)) : 0
+      }));
+
+      const dormTypes = [...new Set(rooms.map(r => r.type))];
+      const dormStats = dormTypes.map(type => {
+        let cap = 0, occ = 0;
+        rooms.filter(r => r.type === type).forEach(r => { cap += r.capacity; occ += (roomOccupancy.get(r.room_no) || 0); });
+        return { type, capacity: cap, occupied: occ, occupancy_rate: cap > 0 ? parseFloat(((occ / cap) * 100).toFixed(1)) : 0 };
+      });
+
       const stats: AssignmentDashboardStats = {
         total_students: students.length, assigned_count: assignedList.length, failed_count: failedList.length,
         success_rate: students.length > 0 ? parseFloat(((assignedList.length / students.length) * 100).toFixed(1)) : 0,
-        dorm_stats: Array.from(new Map(rooms.map(r => [r.type, { capacity: 0, occupied: 0 }])).entries()).map(([type]) => {
-          let cap = 0, occ = 0;
-          rooms.filter(r => r.type === type).forEach(r => { cap += r.capacity; occ += (roomOccupancy.get(r.room_no) || 0); });
-          return { type, capacity: cap, occupied: occ, occupancy_rate: cap > 0 ? parseFloat(((occ / cap) * 100).toFixed(1)) : 0 };
-        }),
-        failed_reasons: Array.from(new Map<string, number>())
+        dorm_stats: dormStats, failed_reasons: failedReasons
       };
-      const failedReasonsMap = new Map<string, number>();
-      failedList.forEach(item => failedReasonsMap.set(item.reason, (failedReasonsMap.get(item.reason) || 0) + 1));
-      stats.failed_reasons = Array.from(failedReasonsMap.entries()).map(([reason, count]) => ({
-        reason, count, percentage: failedList.length > 0 ? parseFloat(((count / failedList.length) * 100).toFixed(1)) : 0
-      }));
 
       const warnings: string[] = [];
       if (studentsWithoutGender.length > 0) warnings.push(`${studentsWithoutGender.length}명의 학생이 성별 정보가 없습니다. (예: ${studentsWithoutGender[0].id})`);
