@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "5whys": {
+      "source": "neurofoo/agent-skills",
+      "sourceType": "github",
+      "skillPath": "5whys/SKILL.md",
+      "computedHash": "4c2b184e3e1212adaacc31fd478aaa32d6ad69655d4fd50f39f757baf0788360"
+    }
+  }
+}

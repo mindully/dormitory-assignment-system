@@ -1,0 +1,6 @@
+{
+  "name": "외국인 유학생을 위한 기숙사 배치 시스템",
+  "description": "유학생 설문 데이터와 기숙사 호실 현황 엑셀을 가공하여 알고리즘에 따라 자동으로 호실을 매칭하고 대시보드를 제공하는 시스템",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
